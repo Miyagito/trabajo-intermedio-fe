@@ -1,1 +1,36 @@
+.product-image-container {
+  margin-left: auto;
+  width: 100px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
 
+.product-image-container img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+.product-image-container:hover img {
+  transform: scale(2.3);
+  z-index: 10;
+  position: relative;
+}
+
+.list-group-item {
+  position: relative;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 10px;
+}
+
+.accordion .card .card-body {
+  overflow: visible;
+}

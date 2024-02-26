@@ -116,23 +116,18 @@ const data = {
   ],
 };
 
-// Función que crea y añade los elementos de categoría al DOM
 function crearElementosCategoria(data) {
   const categoriasContainer = document.getElementById("categorias");
-  categoriasContainer.innerHTML = ""; // Limpia el contenedor de categorías
+  categoriasContainer.innerHTML = "";
 
-  // Itera sobre las categorías y crea su estructura HTML
   data.categorias.forEach((categoria, index) => {
-    // Crea la tarjeta de la categoría
     const card = document.createElement("div");
     card.className = "card";
 
-    // Crea el encabezado de la tarjeta
     const cardHeader = document.createElement("div");
     cardHeader.className = "card-header";
     cardHeader.id = `heading${index}`;
 
-    // Crea el botón del encabezado
     const h2 = document.createElement("h2");
     h2.className = "mb-0";
 
@@ -149,7 +144,6 @@ function crearElementosCategoria(data) {
     cardHeader.appendChild(h2);
     card.appendChild(cardHeader);
 
-    // Crea el contenedor colapsable que incluirá los productos
     const collapseDiv = document.createElement("div");
     collapseDiv.id = `collapse${index}`;
     collapseDiv.className = "collapse";
@@ -159,34 +153,46 @@ function crearElementosCategoria(data) {
     const cardBody = document.createElement("div");
     cardBody.className = "card-body";
 
-    // Crea la lista de productos dentro del contenedor colapsable
     const productList = document.createElement("div");
     productList.className = "list-group";
 
-    // Añade cada producto a la lista
     categoria.productos.forEach((producto) => {
-      const productItem = document.createElement("a");
+      const productItem = document.createElement("div");
       productItem.className =
-        "list-group-item list-group-item-action flex-column align-items-start";
-      productItem.href = "#";
+        "list-group-item d-flex flex-row align-items-center";
 
-      const productContent = document.createElement("div");
-      productContent.className = "d-flex w-100 justify-content-between";
+      const productImgDiv = document.createElement("div");
+      productImgDiv.className = "product-image-container mr-3";
+
+      const productImg = document.createElement("img");
+      productImg.src = producto.imagen;
+      productImg.alt = producto.descripcion;
+      productImg.className = "img-fluid";
+
+      productImgDiv.appendChild(productImg);
+
+      const productDetailsDiv = document.createElement("div");
+      productDetailsDiv.className = "product-details";
 
       const productName = document.createElement("h5");
       productName.className = "mb-1";
       productName.textContent = producto.descripcion;
 
-      const productStock = document.createElement("small");
+      const productInfoDiv = document.createElement("div");
+
+      const productStock = document.createElement("div");
       productStock.textContent = `En stock: ${producto.stock}`;
 
-      const productPrice = document.createElement("small");
+      const productPrice = document.createElement("div");
       productPrice.textContent = `Precio: $${producto.precio}`;
 
-      productContent.appendChild(productName);
-      productContent.appendChild(productStock);
-      productItem.appendChild(productContent);
-      productItem.appendChild(productPrice);
+      productInfoDiv.appendChild(productStock);
+      productInfoDiv.appendChild(productPrice);
+      productDetailsDiv.appendChild(productName);
+      productDetailsDiv.appendChild(productInfoDiv);
+
+      productItem.appendChild(productDetailsDiv);
+      productItem.appendChild(productImgDiv);
 
       productList.appendChild(productItem);
     });
@@ -198,7 +204,16 @@ function crearElementosCategoria(data) {
   });
 }
 
-// Evento DOMContentLoaded para esperar a que la página cargue antes de ejecutar el script
 document.addEventListener("DOMContentLoaded", () => {
-  crearElementosCategoria(data); // Ejecuta la función principal con los datos importados
+  crearElementosCategoria(data);
+  const images = document.querySelectorAll(".product-image-container img");
+  images.forEach((img) => {
+    img.addEventListener("mouseenter", () => {
+      img.classList.add("enlarge");
+    });
+
+    img.addEventListener("mouseleave", () => {
+      img.classList.remove("enlarge");
+    });
+  });
 });

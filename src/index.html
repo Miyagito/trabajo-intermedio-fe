@@ -4,18 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Compra Online</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Productos disponibles -->
         <div class="col-md-8">
             <h2>Productos Disponibles</h2>
             <div id="categorias" class="accordion">
-                <!-- Ejemplo de categoría Electrónica -->
                 <div class="card">
                     <div class="card-header" id="headingElectronica">
                         <h2 class="mb-0">
@@ -26,9 +23,7 @@
                     </div>
                     <div id="categoriaElectronica" class="collapse" aria-labelledby="headingElectronica" data-parent="#categorias">
                         <div class="card-body">
-                            <!-- Lista de productos de Electrónica -->
                             <div class="list-group">
-                                <!-- Ejemplo de producto en Electrónica -->
                                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">Producto Electrónico 1</h5>
@@ -37,13 +32,10 @@
                                     <p class="mb-1">Descripción del producto electrónico.</p>
                                     <small>Precio: $99.99</small>
                                 </a>
-                                <!-- Repetir para más productos en Electrónica -->
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Ejemplo de categoría Moda -->
                 <div class="card">
                     <div class="card-header" id="headingModa">
                         <h2 class="mb-0">
@@ -54,9 +46,7 @@
                     </div>
                     <div id="categoriaModa" class="collapse" aria-labelledby="headingModa" data-parent="#categorias">
                         <div class="card-body">
-                            <!-- Lista de productos de Moda -->
                             <div class="list-group">
-                                <!-- Ejemplo de producto en Moda -->
                                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">Producto de Moda 1</h5>
@@ -65,13 +55,10 @@
                                     <p class="mb-1">Descripción del producto de moda.</p>
                                     <small>Precio: $49.99</small>
                                 </a>
-                                <!-- Repetir para más productos en Moda -->
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Ejemplo de categoría Hogar -->
                 <div class="card">
                     <div class="card-header" id="headingHogar">
                         <h2 class="mb-0">
@@ -82,9 +69,7 @@
                     </div>
                     <div id="categoriaHogar" class="collapse" aria-labelledby="headingHogar" data-parent="#categorias">
                         <div class="card-body">
-                            <!-- Lista de productos de Hogar -->
                             <div class="list-group">
-                                <!-- Ejemplo de producto en Hogar -->
                                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">Producto de Hogar 1</h5>
@@ -93,13 +78,10 @@
                                     <p class="mb-1">Descripción del producto de hogar.</p>
                                     <small>Precio: $199.99</small>
                                 </a>
-                                <!-- Repetir para más productos en Hogar -->
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Ejemplo de categoría Libros -->
                 <div class="card">
                     <div class="card-header" id="headingLibros">
                         <h2 class="mb-0">
@@ -110,9 +92,7 @@
                     </div>
                     <div id="categoriaLibros" class="collapse" aria-labelledby="headingLibros" data-parent="#categorias">
                         <div class="card-body">
-                            <!-- Lista de productos de Libros -->
                             <div class="list-group">
-                                <!-- Ejemplo de producto en Libros -->
                                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">Producto de Libros 1</h5>
@@ -121,21 +101,16 @@
                                     <p class="mb-1">Descripción del producto de libros.</p>
                                     <small>Precio: $29.99</small>
                                 </a>
-                                <!-- Repetir para más productos en Libros -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Repetir para más categorías -->
             </div>
         </div>
 
-        <!-- Cesta de la compra -->
         <div class="col-md-4">
             <h2>Cesta de la Compra</h2>
             <div id="cesta" class="list-group">
-                <!-- Ejemplo de producto en la cesta -->
-                <!-- Los productos se añadirán dinámicamente aquí -->
                 <p class="list-group-item">Tu cesta está vacía.</p>
             </div>
             <button class="btn btn-primary mt-3" id="realizarPedido">Realizar Pedido</button>
@@ -143,7 +118,6 @@
     </div>
 </div>
 
-<!-- Opcional: jQuery y Bootstrap Bundle (incluye Popper) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
