@@ -186,8 +186,12 @@ function crearElementosCategoria(data) {
       const productPrice = document.createElement("div");
       productPrice.textContent = `Precio: $${producto.precio}`;
 
+      const productCode = document.createElement("div");
+      productCode.textContent = `Código: ${producto.codigo}`;
+
       productInfoDiv.appendChild(productStock);
       productInfoDiv.appendChild(productPrice);
+      productInfoDiv.appendChild(productCode);
       productDetailsDiv.appendChild(productName);
       productDetailsDiv.appendChild(productInfoDiv);
 
