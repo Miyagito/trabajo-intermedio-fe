@@ -238,11 +238,26 @@ function agregarACesta(indexCategoria, indexProducto) {
   actualizarCesta();
 }
 
+function eliminarProducto(codigoProducto) {
+  // Encuentra el índice del producto en la cesta
+  const indiceProducto = cesta.findIndex(
+    (item) => item.codigo === codigoProducto
+  );
+
+  // Si se encuentra el producto, elimínalo del array
+  if (indiceProducto !== -1) {
+    cesta.splice(indiceProducto, 1);
+  }
+
+  // Actualiza la cesta para reflejar la eliminación del producto
+  actualizarCesta();
+}
+
 function actualizarCesta() {
   const cestaElemento = document.getElementById("cesta");
   cestaElemento.innerHTML = "";
 
-  cesta.forEach((item) => {
+  cesta.forEach((item, index) => {
     const itemElemento = document.createElement("div");
     itemElemento.className =
       "cesta-item d-flex flex-row justify-content-between";
@@ -250,13 +265,36 @@ function actualizarCesta() {
     const productDetailsDiv = document.createElement("div");
     productDetailsDiv.className = "product-details";
 
-    productDetailsDiv.innerHTML = `
-        <p>${item.descripcion}</p>
-        <p>Código: ${item.codigo}</p>
-        <p>Cantidad: ${item.cantidad}</p>
-        <p>Precio: ${item.precio}</p>
-        <p>Subtotal: ${item.precio * item.cantidad}</p>
-      `;
+    const descripcion = document.createElement("p");
+    descripcion.textContent = item.descripcion;
+
+    const codigo = document.createElement("p");
+    codigo.textContent = `Código: ${item.codigo}`;
+
+    const cantidad = document.createElement("p");
+    cantidad.textContent = `Cantidad: ${item.cantidad}`;
+
+    const precio = document.createElement("p");
+    precio.textContent = `Precio: ${item.precio}`;
+
+    const subtotal = document.createElement("p");
+    subtotal.textContent = `Subtotal: ${item.precio * item.cantidad}`;
+
+    const eliminarBtn = document.createElement("button");
+    eliminarBtn.className = "btn btn-warning";
+    eliminarBtn.textContent = "Eliminar";
+    eliminarBtn.onclick = function () {
+      eliminarProducto(item.codigo);
+    };
+
+    productDetailsDiv.append(
+      descripcion,
+      codigo,
+      cantidad,
+      precio,
+      subtotal,
+      eliminarBtn
+    );
 
     const productImgDiv = document.createElement("div");
     productImgDiv.className = "product-image-container";
