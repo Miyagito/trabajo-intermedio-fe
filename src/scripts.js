@@ -116,6 +116,8 @@ const data = {
   ],
 };
 
+const cesta = [];
+
 function crearElementosCategoria(data) {
   const categoriasContainer = document.getElementById("categorias");
   categoriasContainer.innerHTML = "";
@@ -156,7 +158,7 @@ function crearElementosCategoria(data) {
     const productList = document.createElement("div");
     productList.className = "list-group";
 
-    categoria.productos.forEach((producto) => {
+    categoria.productos.forEach((producto, indexProducto) => {
       const productItem = document.createElement("div");
       productItem.className =
         "list-group-item d-flex flex-row align-items-center";
@@ -169,6 +171,10 @@ function crearElementosCategoria(data) {
       productImg.alt = producto.descripcion;
       productImg.className = "img-fluid";
 
+      const agregarBtn = document.createElement("button");
+      agregarBtn.className = "btn btn-primary";
+      agregarBtn.textContent = "Agregar a la cesta";
+      agregarBtn.onclick = () => agregarACesta(index, indexProducto);
       productImgDiv.appendChild(productImg);
 
       const productDetailsDiv = document.createElement("div");
@@ -199,12 +205,73 @@ function crearElementosCategoria(data) {
       productItem.appendChild(productImgDiv);
 
       productList.appendChild(productItem);
+      productItem.appendChild(agregarBtn);
+      productList.appendChild(productItem);
     });
 
     cardBody.appendChild(productList);
     collapseDiv.appendChild(cardBody);
     card.appendChild(collapseDiv);
     categoriasContainer.appendChild(card);
+  });
+}
+
+function agregarACesta(indexCategoria, indexProducto) {
+  const producto = data.categorias[indexCategoria].productos[indexProducto];
+  const claveProducto = producto.codigo;
+
+  // Verificar si el producto ya está en la cesta
+  const itemEnCesta = cesta.find((item) => item.codigo === claveProducto);
+
+  if (itemEnCesta) {
+    // Incrementar la cantidad si hay stock disponible
+    if (itemEnCesta.cantidad < producto.stock) {
+      itemEnCesta.cantidad++;
+    } else {
+      alert("No hay más stock disponible para este producto.");
+    }
+  } else {
+    // Agregar el producto a la cesta con cantidad 1
+    cesta.push({ ...producto, cantidad: 1 });
+  }
+
+  actualizarCesta();
+}
+
+function actualizarCesta() {
+  const cestaElemento = document.getElementById("cesta");
+  cestaElemento.innerHTML = "";
+
+  cesta.forEach((item) => {
+    const itemElemento = document.createElement("div");
+    itemElemento.className =
+      "cesta-item d-flex flex-row justify-content-between";
+
+    const productDetailsDiv = document.createElement("div");
+    productDetailsDiv.className = "product-details";
+
+    productDetailsDiv.innerHTML = `
+        <p>${item.descripcion}</p>
+        <p>Código: ${item.codigo}</p>
+        <p>Cantidad: ${item.cantidad}</p>
+        <p>Precio: ${item.precio}</p>
+        <p>Subtotal: ${item.precio * item.cantidad}</p>
+      `;
+
+    const productImgDiv = document.createElement("div");
+    productImgDiv.className = "product-image-container";
+
+    const productImg = document.createElement("img");
+    productImg.src = item.imagen;
+    productImg.alt = item.descripcion;
+    productImg.className = "img-fluid img-cesta";
+
+    productImgDiv.appendChild(productImg);
+
+    itemElemento.appendChild(productDetailsDiv);
+    itemElemento.appendChild(productImgDiv);
+
+    cestaElemento.appendChild(itemElemento);
   });
 }
 

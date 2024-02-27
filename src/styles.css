@@ -25,12 +25,24 @@
 }
 
 .product-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 10px;
+  flex: 1;
+  padding-right: 20px;
 }
 
 .accordion .card .card-body {
   overflow: visible;
+}
+
+.cesta-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.img-cesta {
+  max-width: 100px;
+  height: auto;
 }
