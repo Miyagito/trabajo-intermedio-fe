@@ -1,127 +1,278 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de Compra Online</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<div class="container-fluid">
-    <div class="row">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
         <div class="col-md-8">
+          <div class="d-flex justify-content-between align-items-center my-3">
             <h2>Productos Disponibles</h2>
-            <div id="categorias" class="accordion">
-                <div class="card">
-                    <div class="card-header" id="headingElectronica">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#categoriaElectronica" aria-expanded="true" aria-controls="categoriaElectronica">
-                                Electrónica
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="categoriaElectronica" class="collapse" aria-labelledby="headingElectronica" data-parent="#categorias">
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">Producto Electrónico 1</h5>
-                                        <small>10 en stock</small>
-                                    </div>
-                                    <p class="mb-1">Descripción del producto electrónico.</p>
-                                    <small>Precio: $99.99</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingModa">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#categoriaModa" aria-expanded="false" aria-controls="categoriaModa">
-                                Moda
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="categoriaModa" class="collapse" aria-labelledby="headingModa" data-parent="#categorias">
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">Producto de Moda 1</h5>
-                                        <small>20 en stock</small>
-                                    </div>
-                                    <p class="mb-1">Descripción del producto de moda.</p>
-                                    <small>Precio: $49.99</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingHogar">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#categoriaHogar" aria-expanded="false" aria-controls="categoriaHogar">
-                                Hogar
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="categoriaHogar" class="collapse" aria-labelledby="headingHogar" data-parent="#categorias">
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">Producto de Hogar 1</h5>
-                                        <small>15 en stock</small>
-                                    </div>
-                                    <p class="mb-1">Descripción del producto de hogar.</p>
-                                    <small>Precio: $199.99</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingLibros">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#categoriaLibros" aria-expanded="false" aria-controls="categoriaLibros">
-                                Libros
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="categoriaLibros" class="collapse" aria-labelledby="headingLibros" data-parent="#categorias">
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">Producto de Libros 1</h5>
-                                        <small>30 en stock</small>
-                                    </div>
-                                    <p class="mb-1">Descripción del producto de libros.</p>
-                                    <small>Precio: $29.99</small>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="btn-group" role="group" aria-label="Admin options">
+              <button
+                type="button"
+                id="adminMode"
+                class="btn btn-outline-success btn-sm"
+              >
+                Activar Modo Admin
+              </button>
+              <button
+                type="button"
+                id="no-adminMode"
+                class="btn btn-outline-secondary btn-sm"
+              >
+                Desactivar Modo Admin
+              </button>
             </div>
+          </div>
+
+          <div id="admin-options" class="mt-4" style="display: none">
+            <div class="form-group">
+              <label for="nombreCategoria">Nombre de la categoría</label>
+              <input
+                type="text"
+                id="nombreCategoria"
+                class="form-control"
+                placeholder="Nombre de la categoría"
+              />
+            </div>
+            <button class="btn btn-success mb-3">Añadir Categoría</button>
+
+            <h3>Añadir Producto</h3>
+            <label for="contenedorSelectorCategorias"
+              >Categoría del producto</label
+            >
+            <div class="form-group" id="contenedorSelectorCategorias">
+              <!-- Aquí se insertará el selector de categorías dinámicamente -->
+            </div>
+            <div class="form-group">
+              <label for="nombreProducto">Descripción del producto</label>
+              <input
+                type="text"
+                id="nombreProducto"
+                class="form-control"
+                placeholder="Descripción del producto"
+              />
+            </div>
+            <div class="form-group">
+              <label for="precioProducto">Precio del producto</label>
+              <input
+                type="text"
+                id="precioProducto"
+                class="form-control"
+                placeholder="Precio del producto"
+              />
+            </div>
+            <div class="form-group">
+              <label for="stockProducto">Stock del producto</label>
+              <input
+                type="number"
+                id="stockProducto"
+                class="form-control"
+                placeholder="Stock del producto"
+              />
+            </div>
+            <div class="form-group">
+              <label for="codigoProducto">Código del producto</label>
+              <input
+                type="text"
+                id="codigoProducto"
+                class="form-control"
+                placeholder="Código del producto"
+              />
+            </div>
+            <div class="form-group">
+              <label for="imagenProducto">URL de la imagen del producto</label>
+              <input
+                type="text"
+                id="imagenProducto"
+                class="form-control"
+                placeholder="URL de la imagen del producto"
+              />
+            </div>
+            <button class="btn btn-success">Añadir Producto</button>
+          </div>
+
+          <div id="categorias" class="accordion">
+            <div class="card">
+              <div class="card-header" id="headingElectronica">
+                <h2 class="mb-0">
+                  <button
+                    class="btn btn-link btn-block text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#categoriaElectronica"
+                    aria-expanded="true"
+                    aria-controls="categoriaElectronica"
+                  >
+                    Electrónica
+                  </button>
+                </h2>
+              </div>
+              <div
+                id="categoriaElectronica"
+                class="collapse"
+                aria-labelledby="headingElectronica"
+                data-parent="#categorias"
+              >
+                <div class="card-body">
+                  <div class="list-group">
+                    <a
+                      href="#"
+                      class="list-group-item list-group-item-action flex-column align-items-start"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Producto Electrónico 1</h5>
+                        <small>10 en stock</small>
+                      </div>
+                      <p class="mb-1">Descripción del producto electrónico.</p>
+                      <small>Precio: $99.99</small>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingModa">
+                <h2 class="mb-0">
+                  <button
+                    class="btn btn-link btn-block text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#categoriaModa"
+                    aria-expanded="false"
+                    aria-controls="categoriaModa"
+                  >
+                    Moda
+                  </button>
+                </h2>
+              </div>
+              <div
+                id="categoriaModa"
+                class="collapse"
+                aria-labelledby="headingModa"
+                data-parent="#categorias"
+              >
+                <div class="card-body">
+                  <div class="list-group">
+                    <a
+                      href="#"
+                      class="list-group-item list-group-item-action flex-column align-items-start"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Producto de Moda 1</h5>
+                        <small>20 en stock</small>
+                      </div>
+                      <p class="mb-1">Descripción del producto de moda.</p>
+                      <small>Precio: $49.99</small>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingHogar">
+                <h2 class="mb-0">
+                  <button
+                    class="btn btn-link btn-block text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#categoriaHogar"
+                    aria-expanded="false"
+                    aria-controls="categoriaHogar"
+                  >
+                    Hogar
+                  </button>
+                </h2>
+              </div>
+              <div
+                id="categoriaHogar"
+                class="collapse"
+                aria-labelledby="headingHogar"
+                data-parent="#categorias"
+              >
+                <div class="card-body">
+                  <div class="list-group">
+                    <a
+                      href="#"
+                      class="list-group-item list-group-item-action flex-column align-items-start"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Producto de Hogar 1</h5>
+                        <small>15 en stock</small>
+                      </div>
+                      <p class="mb-1">Descripción del producto de hogar.</p>
+                      <small>Precio: $199.99</small>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingLibros">
+                <h2 class="mb-0">
+                  <button
+                    class="btn btn-link btn-block text-left"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#categoriaLibros"
+                    aria-expanded="false"
+                    aria-controls="categoriaLibros"
+                  >
+                    Libros
+                  </button>
+                </h2>
+              </div>
+              <div
+                id="categoriaLibros"
+                class="collapse"
+                aria-labelledby="headingLibros"
+                data-parent="#categorias"
+              >
+                <div class="card-body">
+                  <div class="list-group">
+                    <a
+                      href="#"
+                      class="list-group-item list-group-item-action flex-column align-items-start"
+                    >
+                      <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Producto de Libros 1</h5>
+                        <small>30 en stock</small>
+                      </div>
+                      <p class="mb-1">Descripción del producto de libros.</p>
+                      <small>Precio: $29.99</small>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-4">
-            <h2>Cesta de la Compra</h2>
-            <div id="cesta" class="list-group">
-                <p class="list-group-item">Tu cesta está vacía.</p>
-            </div>
-            <h4>Total de la compra: <span></span></h4>
-            <button class="btn btn-primary mt-3" id="realizarPedido">Realizar Pedido</button>
+        <div class="col-md-4 my-3">
+          <h2>Cesta de la Compra</h2>
+          <div id="cesta" class="list-group">
+            <p class="list-group-item">Tu cesta está vacía.</p>
+          </div>
+          <h4>Total de la compra: <span></span></h4>
+          <button class="btn btn-primary mt-3" id="realizarPedido">
+            Realizar Pedido
+          </button>
         </div>
+      </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="scripts.js"></script>
-</body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="scripts.js"></script>
+  </body>
 </html>

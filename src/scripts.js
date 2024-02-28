@@ -116,7 +116,31 @@ const data = {
   ],
 };
 
-const cesta = [];
+let cesta = [];
+
+function agregarCategoria(nombreCategoria) {
+  const nuevaCategoria = {
+    nombre: nombreCategoria,
+    productos: [],
+  };
+
+  data.categorias.push(nuevaCategoria);
+  crearElementosCategoria(data);
+  actualizarSelectorCategorias();
+}
+
+function agregarProductoACategoria(nombreCategoria, nuevoProducto) {
+  const categoria = data.categorias.find(
+    (categoria) => categoria.nombre === nombreCategoria
+  );
+  if (categoria) {
+    categoria.productos.push(nuevoProducto);
+
+    crearElementosCategoria(data);
+  } else {
+    alert("La categoría no existe");
+  }
+}
 
 function crearElementosCategoria(data) {
   const categoriasContainer = document.getElementById("categorias");
@@ -220,24 +244,19 @@ function crearElementosCategoria(data) {
 function agregarACesta(indexCategoria, indexProducto) {
   const producto = data.categorias[indexCategoria].productos[indexProducto];
   const claveProducto = producto.codigo;
-
-  // Verificar si el producto ya está en la cesta
   const itemEnCesta = cesta.find((item) => item.codigo === claveProducto);
 
   if (itemEnCesta) {
-    // Incrementar la cantidad si hay stock disponible
-    if (itemEnCesta.cantidad < producto.stock) {
+    if (producto.stock > 0) {
       itemEnCesta.cantidad++;
       producto.stock--;
     } else {
       alert("No hay más stock disponible para este producto.");
     }
   } else {
-    // Agregar el producto a la cesta con cantidad 1
     cesta.push({ ...producto, cantidad: 1 });
     producto.stock--;
   }
-  // Actualiza el elemento del stock en el DOM
   const stockElemento = document.getElementById(`stock-${producto.codigo}`);
   if (stockElemento) stockElemento.textContent = `En stock: ${producto.stock}`;
   actualizarCesta();
@@ -247,21 +266,15 @@ function eliminarProducto(codigoProducto) {
   const indiceCesta = cesta.findIndex((item) => item.codigo === codigoProducto);
   if (indiceCesta !== -1) {
     const productoEnCesta = cesta[indiceCesta];
-    // Disminuir la cantidad del producto
     if (productoEnCesta.cantidad > 1) {
       productoEnCesta.cantidad--;
     } else {
-      // Eliminar completamente si la cantidad es 1
       cesta.splice(indiceCesta, 1);
     }
-
-    // Encuentra el producto en la base de datos y aumenta su stock en 1
     data.categorias.forEach((categoria) => {
       categoria.productos.forEach((producto) => {
         if (producto.codigo === codigoProducto) {
           producto.stock++;
-
-          // Actualiza el elemento del stock en el DOM
           const stockElemento = document.getElementById(
             `stock-${producto.codigo}`
           );
@@ -279,8 +292,7 @@ function actualizarCesta() {
   const cestaElemento = document.getElementById("cesta");
   cestaElemento.innerHTML = "";
 
-  let totalCompra = 0; // Inicializar el total de la compra
-
+  let totalCompra = 0;
   cesta.forEach((item, index) => {
     const itemElemento = document.createElement("div");
     itemElemento.className =
@@ -303,7 +315,7 @@ function actualizarCesta() {
 
     const subtotal = document.createElement("p");
     subtotal.textContent = `Subtotal: ${item.precio * item.cantidad}`;
-    totalCompra += item.precio * item.cantidad; // Calcular el total sumando el subtotal de cada item
+    totalCompra += item.precio * item.cantidad;
 
     const eliminarBtn = document.createElement("button");
     eliminarBtn.className = "btn btn-warning";
@@ -343,6 +355,11 @@ function actualizarCesta() {
 
   // Obtener el botón de realizar pedido
   const botonRealizarPedido = document.getElementById("realizarPedido");
+  botonRealizarPedido.onclick = () => {
+    cesta.length = 0;
+    alert("El pedido se ha realizado con éxito");
+    actualizarCesta();
+  };
 
   // Habilitar o deshabilitar el botón de realizar pedido basado en si hay productos en la cesta
   if (cesta.length === 0) {
@@ -354,7 +371,27 @@ function actualizarCesta() {
   }
 }
 
+function actualizarSelectorCategorias() {
+  const selectorCategorias = document.createElement("select");
+  selectorCategorias.id = "categoriaProducto";
+  selectorCategorias.className = "form-control";
+
+  data.categorias.forEach((categoria) => {
+    const opcion = document.createElement("option");
+    opcion.value = categoria.nombre;
+    opcion.textContent = categoria.nombre;
+    selectorCategorias.appendChild(opcion);
+  });
+
+  const contenedorSelector = document.getElementById(
+    "contenedorSelectorCategorias"
+  );
+  contenedorSelector.innerHTML = "";
+  contenedorSelector.appendChild(selectorCategorias);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  actualizarSelectorCategorias();
   crearElementosCategoria(data);
   const images = document.querySelectorAll(".product-image-container img");
   images.forEach((img) => {
@@ -367,4 +404,64 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   actualizarCesta();
+  document.getElementById("adminMode").addEventListener("click", function () {
+    const adminCode = prompt(
+      "Por favor, introduce el código de administrador:"
+    );
+    if (adminCode === "admin") {
+      document.getElementById("admin-options").style.display = "block";
+    } else {
+      alert("Código incorrecto.");
+    }
+  });
+  document
+    .getElementById("no-adminMode")
+    .addEventListener("click", function () {
+      document.getElementById("admin-options").style.display = "none";
+    });
+  document
+    .querySelector(".btn-success.mb-3")
+    .addEventListener("click", function () {
+      const nombreCategoria = document.getElementById("nombreCategoria").value;
+      if (nombreCategoria) {
+        agregarCategoria(nombreCategoria);
+        document.getElementById("nombreCategoria").value = "";
+      } else {
+        alert("Por favor, introduce el nombre de la categoría.");
+      }
+    });
+
+  document
+    .querySelectorAll(".btn-success")[1]
+    .addEventListener("click", function () {
+      const nombreCategoria = document
+        .getElementById("categoriaProducto")
+        .value.trim();
+      const descripcion = document
+        .getElementById("nombreProducto")
+        .value.trim();
+      const precio = parseFloat(
+        document.getElementById("precioProducto").value
+      );
+      const stock = parseInt(
+        document.getElementById("stockProducto").value,
+        10
+      );
+      const codigo = document.getElementById("codigoProducto").value.trim();
+      const imagen = document.getElementById("imagenProducto").value.trim();
+
+      if (descripcion && precio && stock && codigo && imagen) {
+        const nuevoProducto = { imagen, codigo, descripcion, precio, stock };
+        agregarProductoACategoria(nombreCategoria, nuevoProducto);
+        [
+          "nombreProducto",
+          "precioProducto",
+          "stockProducto",
+          "codigoProducto",
+          "imagenProducto",
+        ].forEach((id) => (document.getElementById(id).value = ""));
+      } else {
+        alert("Por favor, completa todos los campos para el nuevo producto.");
+      }
+    });
 });
