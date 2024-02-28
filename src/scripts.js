@@ -226,7 +226,7 @@ function agregarACesta(indexCategoria, indexProducto) {
 
   if (itemEnCesta) {
     // Incrementar la cantidad si hay stock disponible
-    if (itemEnCesta.cantidad < producto.stock) {
+    if (producto.stock > 0) {
       itemEnCesta.cantidad++;
       producto.stock--;
     } else {
