@@ -8,7 +8,7 @@ const data = {
           codigo: "ELEC12345",
           descripcion: "Teléfono inteligente de última generación",
           precio: 799.99,
-          stock: 3,
+          stock: 25,
         },
         {
           imagen:
@@ -16,14 +16,14 @@ const data = {
           codigo: "ELEC23456",
           descripcion: "Tableta de alta resolución con 128GB de almacenamiento",
           precio: 599.99,
-          stock: 4,
+          stock: 30,
         },
         {
           imagen: "https://m.media-amazon.com/images/I/91woduXUkRL.jpg",
           codigo: "ELEC34567",
           descripcion: "Portátil ultraligero y potente para gaming",
           precio: 1200.99,
-          stock: 2,
+          stock: 15,
         },
       ],
     },
@@ -118,31 +118,7 @@ const data = {
 
 const cesta = [];
 
-function restaurarEstadoAcordeon() {
-  // Selecciona el elemento con el id "collapse0"
-  const acordeon = document.querySelector("#collapse0");
-
-  // Verifica si el elemento está presente
-  if (acordeon) {
-    // Obtiene el id del acordeón
-    const id = acordeon.id;
-    // Verifica si el acordeón estaba abierto previamente
-    const wasOpen = $(`#${id}`).hasClass("show");
-
-    // Si el acordeón estaba abierto, lo muestra
-    if (wasOpen) {
-      new bootstrap.Collapse(acordeon, {
-        toggle: false,
-      }).show();
-    }
-  }
-}
-
 function crearElementosCategoria(data) {
-  const stockGuardado = JSON.parse(localStorage.getItem("stock"));
-  if (stockGuardado) {
-    data.categorias = stockGuardado;
-  }
   const categoriasContainer = document.getElementById("categorias");
   categoriasContainer.innerHTML = "";
 
@@ -211,6 +187,7 @@ function crearElementosCategoria(data) {
       const productInfoDiv = document.createElement("div");
 
       const productStock = document.createElement("div");
+      productStock.id = `stock-${producto.codigo}`;
       productStock.textContent = `En stock: ${producto.stock}`;
 
       const productPrice = document.createElement("div");
@@ -238,144 +215,147 @@ function crearElementosCategoria(data) {
     card.appendChild(collapseDiv);
     categoriasContainer.appendChild(card);
   });
-  restaurarEstadoAcordeon();
-  localStorage.setItem("stock", JSON.stringify(data.categorias));
-}
-
-// USANDO jQuery para cumplir con los requerimientos de la asignatura
-function verificarEstadoBotonPedido() {
-  const $botonPedido = $("#realizarPedido");
-  if (cesta.length === 0) {
-    $botonPedido.prop("disabled", true); // Deshabilita el botón si la cesta está vacía
-  } else {
-    $botonPedido.prop("disabled", false); // Habilita el botón si la cesta tiene al menos un producto
-  }
-}
-
-function calcularTotalCesta() {
-  let total = 0;
-  cesta.forEach((item) => {
-    total += item.precio * item.cantidad;
-  });
-  return total;
-}
-
-function actualizarTotalCompra() {
-  const totalCompra = calcularTotalCesta();
-  document.getElementById("totalCompra").textContent = `$${totalCompra.toFixed(
-    2
-  )}`;
 }
 
 function agregarACesta(indexCategoria, indexProducto) {
   const producto = data.categorias[indexCategoria].productos[indexProducto];
+  const claveProducto = producto.codigo;
 
-  // Solo proceder si hay stock disponible
-  if (producto.stock > 0) {
-    producto.stock--; // Disminuir el stock en la base de datos
+  // Verificar si el producto ya está en la cesta
+  const itemEnCesta = cesta.find((item) => item.codigo === claveProducto);
 
-    const claveProducto = producto.codigo;
-    const itemEnCesta = cesta.find((item) => item.codigo === claveProducto);
-
-    if (itemEnCesta) {
+  if (itemEnCesta) {
+    // Incrementar la cantidad si hay stock disponible
+    if (itemEnCesta.cantidad < producto.stock) {
       itemEnCesta.cantidad++;
+      producto.stock--;
     } else {
-      cesta.push({ ...producto, cantidad: 1 });
+      alert("No hay más stock disponible para este producto.");
     }
-
-    actualizarCesta();
-    actualizarTotalCompra();
-    crearElementosCategoria(data);
-    restaurarEstadoAcordeon();
-    permitirCierreAcordeon = true;
   } else {
-    alert("No hay más stock disponible para este producto.");
+    // Agregar el producto a la cesta con cantidad 1
+    cesta.push({ ...producto, cantidad: 1 });
+    producto.stock--;
   }
+  // Actualiza el elemento del stock en el DOM
+  const stockElemento = document.getElementById(`stock-${producto.codigo}`);
+  if (stockElemento) stockElemento.textContent = `En stock: ${producto.stock}`;
+  actualizarCesta();
 }
 
 function eliminarProducto(codigoProducto) {
   const indiceCesta = cesta.findIndex((item) => item.codigo === codigoProducto);
   if (indiceCesta !== -1) {
-    const productoEliminado = cesta[indiceCesta];
-    // Encuentra el producto en la base de datos y aumenta su stock
-    data.categorias.forEach((categoria) => {
-      categoria.productos.forEach((producto) => {
-        if (producto.codigo === productoEliminado.codigo) {
-          producto.stock += productoEliminado.cantidad;
-        }
-      });
-    });
+    const productoEnCesta = cesta[indiceCesta];
+    // Disminuir la cantidad del producto
+    if (productoEnCesta.cantidad > 1) {
+      productoEnCesta.cantidad--;
+    } else {
+      // Eliminar completamente si la cantidad es 1
+      cesta.splice(indiceCesta, 1);
+    }
 
-    cesta.splice(indiceCesta, 1);
-    actualizarCesta();
-    actualizarTotalCompra();
-    crearElementosCategoria(data);
-    restaurarEstadoAcordeon();
-    permitirCierreAcordeon = false;
-  }
-}
-
-function disminuirProducto(codigoProducto) {
-  const productoEnCesta = cesta.find((item) => item.codigo === codigoProducto);
-  if (productoEnCesta && productoEnCesta.cantidad > 1) {
-    productoEnCesta.cantidad--;
-
-    // Encuentra el producto en la base de datos y aumenta su stock
+    // Encuentra el producto en la base de datos y aumenta su stock en 1
     data.categorias.forEach((categoria) => {
       categoria.productos.forEach((producto) => {
         if (producto.codigo === codigoProducto) {
           producto.stock++;
+
+          // Actualiza el elemento del stock en el DOM
+          const stockElemento = document.getElementById(
+            `stock-${producto.codigo}`
+          );
+          if (stockElemento)
+            stockElemento.textContent = `En stock: ${producto.stock}`;
         }
       });
     });
 
     actualizarCesta();
-    crearElementosCategoria(data);
-  } else {
-    eliminarProducto(codigoProducto);
   }
 }
 
-// USANDO jQuery para cumplir con los requerimientos de la asignatura
 function actualizarCesta() {
-  const $cestaElemento = $("#cesta");
-  $cestaElemento.empty(); // Vacía el contenido actual de la cesta
+  const cestaElemento = document.getElementById("cesta");
+  cestaElemento.innerHTML = "";
 
-  cesta.forEach((item) => {
-    const itemElemento = `
-        <div class="cesta-item d-flex flex-row justify-content-between">
-          <div class="product-details">
-            <p>${item.descripcion}</p>
-            <p>Código: ${item.codigo}</p>
-            <p>Cantidad: ${item.cantidad}</p>
-            <p>Precio: ${item.precio}</p>
-            <p>Subtotal: ${item.precio * item.cantidad}</p>
-            <button class="btn btn-danger disminuirProductoBtn" data-codigo="${
-              item.codigo
-            }">Eliminar de la cesta</button>
-          </div>
-          <div class="product-image-container">
-            <img src="${item.imagen}" alt="${
-      item.descripcion
-    }" class="img-fluid img-cesta">
-          </div>
-        </div>
-      `;
-    $cestaElemento.append(itemElemento);
+  let totalCompra = 0; // Inicializar el total de la compra
+
+  cesta.forEach((item, index) => {
+    const itemElemento = document.createElement("div");
+    itemElemento.className =
+      "cesta-item d-flex flex-row justify-content-between";
+
+    const productDetailsDiv = document.createElement("div");
+    productDetailsDiv.className = "product-details";
+
+    const descripcion = document.createElement("p");
+    descripcion.textContent = item.descripcion;
+
+    const codigo = document.createElement("p");
+    codigo.textContent = `Código: ${item.codigo}`;
+
+    const cantidad = document.createElement("p");
+    cantidad.textContent = `Cantidad: ${item.cantidad}`;
+
+    const precio = document.createElement("p");
+    precio.textContent = `Precio: ${item.precio}`;
+
+    const subtotal = document.createElement("p");
+    subtotal.textContent = `Subtotal: ${item.precio * item.cantidad}`;
+    totalCompra += item.precio * item.cantidad; // Calcular el total sumando el subtotal de cada item
+
+    const eliminarBtn = document.createElement("button");
+    eliminarBtn.className = "btn btn-warning";
+    eliminarBtn.textContent = "Eliminar de la cesta";
+    eliminarBtn.onclick = function () {
+      eliminarProducto(item.codigo);
+    };
+
+    productDetailsDiv.append(
+      descripcion,
+      codigo,
+      cantidad,
+      precio,
+      subtotal,
+      eliminarBtn
+    );
+
+    const productImgDiv = document.createElement("div");
+    productImgDiv.className = "product-image-container";
+
+    const productImg = document.createElement("img");
+    productImg.src = item.imagen;
+    productImg.alt = item.descripcion;
+    productImg.className = "img-fluid img-cesta";
+
+    productImgDiv.appendChild(productImg);
+
+    itemElemento.appendChild(productDetailsDiv);
+    itemElemento.appendChild(productImgDiv);
+
+    cestaElemento.appendChild(itemElemento);
   });
 
-  $(".disminuirProductoBtn").click(function () {
-    const codigoProducto = $(this).data("codigo");
-    disminuirProducto(codigoProducto);
-  });
+  // Actualizar el elemento span con el total de la compra
+  const totalCompraElemento = document.querySelector("h4 > span");
+  totalCompraElemento.textContent = `$${totalCompra.toFixed(2)}`; // Mostrar el total formateado a dos decimales
 
-  verificarEstadoBotonPedido();
-  actualizarTotalCompra();
+  // Obtener el botón de realizar pedido
+  const botonRealizarPedido = document.getElementById("realizarPedido");
+
+  // Habilitar o deshabilitar el botón de realizar pedido basado en si hay productos en la cesta
+  if (cesta.length === 0) {
+    botonRealizarPedido.disabled = true; // Deshabilitar el botón si la cesta está vacía
+    cestaElemento.innerHTML =
+      '<p class="list-group-item">Tu cesta está vacía.</p>'; // Mostrar mensaje de cesta vacía
+  } else {
+    botonRealizarPedido.disabled = false; // Habilitar el botón si la cesta tiene productos
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   crearElementosCategoria(data);
-  restaurarEstadoAcordeon(); // Llamada añadida aquí
   const images = document.querySelectorAll(".product-image-container img");
   images.forEach((img) => {
     img.addEventListener("mouseenter", () => {
@@ -386,5 +366,5 @@ document.addEventListener("DOMContentLoaded", () => {
       img.classList.remove("enlarge");
     });
   });
-  verificarEstadoBotonPedido();
+  actualizarCesta();
 });
