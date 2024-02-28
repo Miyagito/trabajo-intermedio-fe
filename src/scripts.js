@@ -187,6 +187,7 @@ function crearElementosCategoria(data) {
       const productInfoDiv = document.createElement("div");
 
       const productStock = document.createElement("div");
+      productStock.id = `stock-${producto.codigo}`;
       productStock.textContent = `En stock: ${producto.stock}`;
 
       const productPrice = document.createElement("div");
@@ -227,14 +228,18 @@ function agregarACesta(indexCategoria, indexProducto) {
     // Incrementar la cantidad si hay stock disponible
     if (itemEnCesta.cantidad < producto.stock) {
       itemEnCesta.cantidad++;
+      producto.stock--;
     } else {
       alert("No hay más stock disponible para este producto.");
     }
   } else {
     // Agregar el producto a la cesta con cantidad 1
     cesta.push({ ...producto, cantidad: 1 });
+    producto.stock--;
   }
-
+  // Actualiza el elemento del stock en el DOM
+  const stockElemento = document.getElementById(`stock-${producto.codigo}`);
+  if (stockElemento) stockElemento.textContent = `En stock: ${producto.stock}`;
   actualizarCesta();
 }
 
@@ -245,26 +250,27 @@ function eliminarProducto(codigoProducto) {
     // Disminuir la cantidad del producto
     if (productoEnCesta.cantidad > 1) {
       productoEnCesta.cantidad--;
-      // Encuentra el producto en la base de datos y aumenta su stock en 1
-      data.categorias.forEach((categoria) => {
-        categoria.productos.forEach((producto) => {
-          if (producto.codigo === productoEnCesta.codigo) {
-            producto.stock++;
-          }
-        });
-      });
     } else {
       // Eliminar completamente si la cantidad es 1
       cesta.splice(indiceCesta, 1);
-      // Encuentra el producto en la base de datos y aumenta su stock en 1
-      data.categorias.forEach((categoria) => {
-        categoria.productos.forEach((producto) => {
-          if (producto.codigo === codigoProducto) {
-            producto.stock++;
-          }
-        });
-      });
     }
+
+    // Encuentra el producto en la base de datos y aumenta su stock en 1
+    data.categorias.forEach((categoria) => {
+      categoria.productos.forEach((producto) => {
+        if (producto.codigo === codigoProducto) {
+          producto.stock++;
+
+          // Actualiza el elemento del stock en el DOM
+          const stockElemento = document.getElementById(
+            `stock-${producto.codigo}`
+          );
+          if (stockElemento)
+            stockElemento.textContent = `En stock: ${producto.stock}`;
+        }
+      });
+    });
+
     actualizarCesta();
   }
 }
@@ -360,4 +366,5 @@ document.addEventListener("DOMContentLoaded", () => {
       img.classList.remove("enlarge");
     });
   });
+  actualizarCesta();
 });
