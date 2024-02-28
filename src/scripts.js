@@ -119,32 +119,23 @@ const data = {
 let cesta = [];
 
 function agregarCategoria(nombreCategoria) {
-  // Crea un nuevo objeto de categoría con un array de productos vacío
   const nuevaCategoria = {
     nombre: nombreCategoria,
     productos: [],
   };
 
-  // Añade la nueva categoría al array de categorías en el objeto data
   data.categorias.push(nuevaCategoria);
-
-  // Actualiza la interfaz de usuario para mostrar la nueva categoría
   crearElementosCategoria(data);
   actualizarSelectorCategorias();
 }
 
 function agregarProductoACategoria(nombreCategoria, nuevoProducto) {
-  console.log(nombreCategoria, "categ");
-  // Encuentra la categoría por nombre
   const categoria = data.categorias.find(
     (categoria) => categoria.nombre === nombreCategoria
   );
-
-  // Si la categoría existe, añade el nuevo producto al array de productos de la categoría
   if (categoria) {
     categoria.productos.push(nuevoProducto);
 
-    // Actualiza la interfaz de usuario para mostrar el nuevo producto
     crearElementosCategoria(data);
   } else {
     alert("La categoría no existe");
@@ -253,12 +244,9 @@ function crearElementosCategoria(data) {
 function agregarACesta(indexCategoria, indexProducto) {
   const producto = data.categorias[indexCategoria].productos[indexProducto];
   const claveProducto = producto.codigo;
-
-  // Verificar si el producto ya está en la cesta
   const itemEnCesta = cesta.find((item) => item.codigo === claveProducto);
 
   if (itemEnCesta) {
-    // Incrementar la cantidad si hay stock disponible
     if (producto.stock > 0) {
       itemEnCesta.cantidad++;
       producto.stock--;
@@ -266,11 +254,9 @@ function agregarACesta(indexCategoria, indexProducto) {
       alert("No hay más stock disponible para este producto.");
     }
   } else {
-    // Agregar el producto a la cesta con cantidad 1
     cesta.push({ ...producto, cantidad: 1 });
     producto.stock--;
   }
-  // Actualiza el elemento del stock en el DOM
   const stockElemento = document.getElementById(`stock-${producto.codigo}`);
   if (stockElemento) stockElemento.textContent = `En stock: ${producto.stock}`;
   actualizarCesta();
@@ -280,21 +266,15 @@ function eliminarProducto(codigoProducto) {
   const indiceCesta = cesta.findIndex((item) => item.codigo === codigoProducto);
   if (indiceCesta !== -1) {
     const productoEnCesta = cesta[indiceCesta];
-    // Disminuir la cantidad del producto
     if (productoEnCesta.cantidad > 1) {
       productoEnCesta.cantidad--;
     } else {
-      // Eliminar completamente si la cantidad es 1
       cesta.splice(indiceCesta, 1);
     }
-
-    // Encuentra el producto en la base de datos y aumenta su stock en 1
     data.categorias.forEach((categoria) => {
       categoria.productos.forEach((producto) => {
         if (producto.codigo === codigoProducto) {
           producto.stock++;
-
-          // Actualiza el elemento del stock en el DOM
           const stockElemento = document.getElementById(
             `stock-${producto.codigo}`
           );
@@ -312,8 +292,7 @@ function actualizarCesta() {
   const cestaElemento = document.getElementById("cesta");
   cestaElemento.innerHTML = "";
 
-  let totalCompra = 0; // Inicializar el total de la compra
-
+  let totalCompra = 0;
   cesta.forEach((item, index) => {
     const itemElemento = document.createElement("div");
     itemElemento.className =
@@ -336,7 +315,7 @@ function actualizarCesta() {
 
     const subtotal = document.createElement("p");
     subtotal.textContent = `Subtotal: ${item.precio * item.cantidad}`;
-    totalCompra += item.precio * item.cantidad; // Calcular el total sumando el subtotal de cada item
+    totalCompra += item.precio * item.cantidad;
 
     const eliminarBtn = document.createElement("button");
     eliminarBtn.className = "btn btn-warning";
@@ -404,11 +383,10 @@ function actualizarSelectorCategorias() {
     selectorCategorias.appendChild(opcion);
   });
 
-  // Encuentra el contenedor en el formulario donde deseas añadir el selector
   const contenedorSelector = document.getElementById(
     "contenedorSelectorCategorias"
   );
-  contenedorSelector.innerHTML = ""; // Limpiar el contenedor por si ya había un selector
+  contenedorSelector.innerHTML = "";
   contenedorSelector.appendChild(selectorCategorias);
 }
 
@@ -447,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nombreCategoria = document.getElementById("nombreCategoria").value;
       if (nombreCategoria) {
         agregarCategoria(nombreCategoria);
-        document.getElementById("nombreCategoria").value = ""; // Limpiar campo
+        document.getElementById("nombreCategoria").value = "";
       } else {
         alert("Por favor, introduce el nombre de la categoría.");
       }
@@ -475,7 +453,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (descripcion && precio && stock && codigo && imagen) {
         const nuevoProducto = { imagen, codigo, descripcion, precio, stock };
         agregarProductoACategoria(nombreCategoria, nuevoProducto);
-        // Limpiar campos del formulario
         [
           "nombreProducto",
           "precioProducto",
