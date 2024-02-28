@@ -239,23 +239,41 @@ function agregarACesta(indexCategoria, indexProducto) {
 }
 
 function eliminarProducto(codigoProducto) {
-  // Encuentra el índice del producto en la cesta
-  const indiceProducto = cesta.findIndex(
-    (item) => item.codigo === codigoProducto
-  );
-
-  // Si se encuentra el producto, elimínalo del array
-  if (indiceProducto !== -1) {
-    cesta.splice(indiceProducto, 1);
+  const indiceCesta = cesta.findIndex((item) => item.codigo === codigoProducto);
+  if (indiceCesta !== -1) {
+    const productoEnCesta = cesta[indiceCesta];
+    // Disminuir la cantidad del producto
+    if (productoEnCesta.cantidad > 1) {
+      productoEnCesta.cantidad--;
+      // Encuentra el producto en la base de datos y aumenta su stock en 1
+      data.categorias.forEach((categoria) => {
+        categoria.productos.forEach((producto) => {
+          if (producto.codigo === productoEnCesta.codigo) {
+            producto.stock++;
+          }
+        });
+      });
+    } else {
+      // Eliminar completamente si la cantidad es 1
+      cesta.splice(indiceCesta, 1);
+      // Encuentra el producto en la base de datos y aumenta su stock en 1
+      data.categorias.forEach((categoria) => {
+        categoria.productos.forEach((producto) => {
+          if (producto.codigo === codigoProducto) {
+            producto.stock++;
+          }
+        });
+      });
+    }
+    actualizarCesta();
   }
-
-  // Actualiza la cesta para reflejar la eliminación del producto
-  actualizarCesta();
 }
 
 function actualizarCesta() {
   const cestaElemento = document.getElementById("cesta");
   cestaElemento.innerHTML = "";
+
+  let totalCompra = 0; // Inicializar el total de la compra
 
   cesta.forEach((item, index) => {
     const itemElemento = document.createElement("div");
@@ -279,10 +297,11 @@ function actualizarCesta() {
 
     const subtotal = document.createElement("p");
     subtotal.textContent = `Subtotal: ${item.precio * item.cantidad}`;
+    totalCompra += item.precio * item.cantidad; // Calcular el total sumando el subtotal de cada item
 
     const eliminarBtn = document.createElement("button");
     eliminarBtn.className = "btn btn-warning";
-    eliminarBtn.textContent = "Eliminar";
+    eliminarBtn.textContent = "Eliminar de la cesta";
     eliminarBtn.onclick = function () {
       eliminarProducto(item.codigo);
     };
@@ -311,6 +330,22 @@ function actualizarCesta() {
 
     cestaElemento.appendChild(itemElemento);
   });
+
+  // Actualizar el elemento span con el total de la compra
+  const totalCompraElemento = document.querySelector("h4 > span");
+  totalCompraElemento.textContent = `$${totalCompra.toFixed(2)}`; // Mostrar el total formateado a dos decimales
+
+  // Obtener el botón de realizar pedido
+  const botonRealizarPedido = document.getElementById("realizarPedido");
+
+  // Habilitar o deshabilitar el botón de realizar pedido basado en si hay productos en la cesta
+  if (cesta.length === 0) {
+    botonRealizarPedido.disabled = true; // Deshabilitar el botón si la cesta está vacía
+    cestaElemento.innerHTML =
+      '<p class="list-group-item">Tu cesta está vacía.</p>'; // Mostrar mensaje de cesta vacía
+  } else {
+    botonRealizarPedido.disabled = false; // Habilitar el botón si la cesta tiene productos
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
