@@ -118,6 +118,39 @@ const data = {
 
 let cesta = [];
 
+function agregarCategoria(nombreCategoria) {
+  // Crea un nuevo objeto de categoría con un array de productos vacío
+  const nuevaCategoria = {
+    nombre: nombreCategoria,
+    productos: [],
+  };
+
+  // Añade la nueva categoría al array de categorías en el objeto data
+  data.categorias.push(nuevaCategoria);
+
+  // Actualiza la interfaz de usuario para mostrar la nueva categoría
+  crearElementosCategoria(data);
+  actualizarSelectorCategorias();
+}
+
+function agregarProductoACategoria(nombreCategoria, nuevoProducto) {
+  console.log(nombreCategoria, "categ");
+  // Encuentra la categoría por nombre
+  const categoria = data.categorias.find(
+    (categoria) => categoria.nombre === nombreCategoria
+  );
+
+  // Si la categoría existe, añade el nuevo producto al array de productos de la categoría
+  if (categoria) {
+    categoria.productos.push(nuevoProducto);
+
+    // Actualiza la interfaz de usuario para mostrar el nuevo producto
+    crearElementosCategoria(data);
+  } else {
+    alert("La categoría no existe");
+  }
+}
+
 function crearElementosCategoria(data) {
   const categoriasContainer = document.getElementById("categorias");
   categoriasContainer.innerHTML = "";
@@ -359,7 +392,28 @@ function actualizarCesta() {
   }
 }
 
+function actualizarSelectorCategorias() {
+  const selectorCategorias = document.createElement("select");
+  selectorCategorias.id = "categoriaProducto";
+  selectorCategorias.className = "form-control";
+
+  data.categorias.forEach((categoria) => {
+    const opcion = document.createElement("option");
+    opcion.value = categoria.nombre;
+    opcion.textContent = categoria.nombre;
+    selectorCategorias.appendChild(opcion);
+  });
+
+  // Encuentra el contenedor en el formulario donde deseas añadir el selector
+  const contenedorSelector = document.getElementById(
+    "contenedorSelectorCategorias"
+  );
+  contenedorSelector.innerHTML = ""; // Limpiar el contenedor por si ya había un selector
+  contenedorSelector.appendChild(selectorCategorias);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  actualizarSelectorCategorias();
   crearElementosCategoria(data);
   const images = document.querySelectorAll(".product-image-container img");
   images.forEach((img) => {
@@ -372,4 +426,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   actualizarCesta();
+  document.getElementById("adminMode").addEventListener("click", function () {
+    const adminCode = prompt(
+      "Por favor, introduce el código de administrador:"
+    );
+    if (adminCode === "admin") {
+      document.getElementById("admin-options").style.display = "block";
+    } else {
+      alert("Código incorrecto.");
+    }
+  });
+  document
+    .getElementById("no-adminMode")
+    .addEventListener("click", function () {
+      document.getElementById("admin-options").style.display = "none";
+    });
+  document
+    .querySelector(".btn-success.mb-3")
+    .addEventListener("click", function () {
+      const nombreCategoria = document.getElementById("nombreCategoria").value;
+      if (nombreCategoria) {
+        agregarCategoria(nombreCategoria);
+        document.getElementById("nombreCategoria").value = ""; // Limpiar campo
+      } else {
+        alert("Por favor, introduce el nombre de la categoría.");
+      }
+    });
+
+  document
+    .querySelectorAll(".btn-success")[1]
+    .addEventListener("click", function () {
+      const nombreCategoria = document
+        .getElementById("categoriaProducto")
+        .value.trim();
+      const descripcion = document
+        .getElementById("nombreProducto")
+        .value.trim();
+      const precio = parseFloat(
+        document.getElementById("precioProducto").value
+      );
+      const stock = parseInt(
+        document.getElementById("stockProducto").value,
+        10
+      );
+      const codigo = document.getElementById("codigoProducto").value.trim();
+      const imagen = document.getElementById("imagenProducto").value.trim();
+
+      if (descripcion && precio && stock && codigo && imagen) {
+        const nuevoProducto = { imagen, codigo, descripcion, precio, stock };
+        agregarProductoACategoria(nombreCategoria, nuevoProducto);
+        // Limpiar campos del formulario
+        [
+          "nombreProducto",
+          "precioProducto",
+          "stockProducto",
+          "codigoProducto",
+          "imagenProducto",
+        ].forEach((id) => (document.getElementById(id).value = ""));
+      } else {
+        alert("Por favor, completa todos los campos para el nuevo producto.");
+      }
+    });
 });
