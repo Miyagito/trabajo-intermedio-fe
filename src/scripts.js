@@ -116,7 +116,7 @@ const data = {
   ],
 };
 
-const cesta = [];
+let cesta = [];
 
 function crearElementosCategoria(data) {
   const categoriasContainer = document.getElementById("categorias");
@@ -343,6 +343,11 @@ function actualizarCesta() {
 
   // Obtener el botón de realizar pedido
   const botonRealizarPedido = document.getElementById("realizarPedido");
+  botonRealizarPedido.onclick = () => {
+    cesta.length = 0;
+    alert("El pedido se ha realizado con éxito");
+    actualizarCesta();
+  };
 
   // Habilitar o deshabilitar el botón de realizar pedido basado en si hay productos en la cesta
   if (cesta.length === 0) {
